@@ -12,6 +12,9 @@ class ContactsController extends Controller
     {
         Contact::create([
             'name' => request('name'),
+            'email' => request('email'),
+            'birthday' => request('birthday'),
+            'company' => request('company'),
         ]);
     }
 }
