@@ -78,6 +78,17 @@ return [
             'prefix' => '',
         ],
 
+        // 以下はテスト用の記述 sqliteを使用する
+        'testing' => [
+            'driver'   => 'sqlite',
+            'database' => ':memory:', // SQLiteのインメモリ機能を使用
+            'prefix'   => '',
+            'options'  => [
+                // テストデータの永続化
+                PDO::ATTR_PERSISTENT => false,
+            ],
+        ],
+
     ],
 
     /*
