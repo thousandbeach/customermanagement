@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Contact;
 use Carbon\Carbon;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,8 +12,26 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ContactsTest extends TestCase
 {
     use RefreshDatabase;
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = factory(User::class)->create();
+    }
+    
+    /** @test
+     *
+     */
+    public function an_unauthenticated_user_should_redirect_to_login()
+    {
+        $response = $this->post('/api/contacts', $this->data());
+        $response->assertRedirect('/login');
+        $this->assertCount(0, Contact::all());
+    }
+
     /** @test */
-    public function a_contact_can_be_added()
+    public function an_authenticated_user_can_add_a_contact()
     {
         $this->post('/api/contacts', $this->data());
 
@@ -113,6 +132,7 @@ class ContactsTest extends TestCase
             'email' => 'test@email.com',
             'birthday' => '05/14/1988',
             'company' => 'ABC String',
+            'api_token' => $this->user->api_token,
         ];
     }
 }
