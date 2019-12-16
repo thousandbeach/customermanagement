@@ -19,7 +19,24 @@ class ContactsTest extends TestCase
         parent::setUp();
         $this->user = factory(User::class)->create();
     }
-    
+
+    /**
+     * @test
+     * ユーザーに関連づけられているものを削除、表示および編集する。
+     * 認証されたユーザーの連絡先のリストを取得できるかのテスト。
+     */
+    public function a_list_of_contacts_can_be_fetched_for_the_authenticated_user()
+    {
+        $user = factory(User::class)->create();
+        $anotherUser = factory(User::class)->create();
+
+        $contact = factory(Contact::class)->create(['user_id' => $user->id]);
+        $anotherContact = factory(Contact::class)->create(['user_id' => $anotherUser->id]);
+
+        $response = $this->get('/api/contacts?api_token=' . $user->api_token);
+
+        $response->assertJsonCount(1)->assertJson([['id' => $contact->id]]);
+    }
     /** @test
      *
      */
