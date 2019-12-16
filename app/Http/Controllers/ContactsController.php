@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 class ContactsController extends Controller
 {
     //
+    public function index()
+    {
+        return request()->user()->contacts;
+    }
+
     public function store()
     {
         Contact::create($this->validateData());
