@@ -20,6 +20,11 @@ class ContactsController extends Controller
 
     public function show(Contact $contact)
     {
+        // dd($contact->user);
+        if (request()->user()->isNot($contact->user)) {
+            //dd('here');
+            return response([], 403);
+        }
         return $contact;
     }
 
