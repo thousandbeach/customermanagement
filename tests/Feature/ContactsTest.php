@@ -25,7 +25,7 @@ class ContactsTest extends TestCase
      */
     public function an_unauthenticated_user_should_redirect_to_login()
     {
-        $response = $this->post('/api/contacts', $this->data());
+        $response = $this->post('/api/contacts', array_merge($this->data(), ['api_token' => '']));
         $response->assertRedirect('/login');
         $this->assertCount(0, Contact::all());
     }
@@ -94,7 +94,7 @@ class ContactsTest extends TestCase
     public function a_contact_can_be_retrieved()
     {
         $contact = factory(Contact::class)->create();
-        $response = $this->get('/api/contacts/' . $contact->id);
+        $response = $this->get('/api/contacts/' . $contact->id . '?api_token=' . $this->user->api_token);
         $response->assertJson([
             'name' => $contact->name,
             'email' => $contact->email,
@@ -121,7 +121,7 @@ class ContactsTest extends TestCase
     public function a_contact_can_be_deleted()
     {
         $contact = factory(Contact::class)->create();
-        $response = $this->delete('/api/contacts/' . $contact->id);
+        $response = $this->delete('/api/contacts/' . $contact->id, ['api_token' => $this->user->api_token]);
         $this->assertCount(0, Contact::all());
     }
 
