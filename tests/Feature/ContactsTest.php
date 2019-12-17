@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Contact;
 use Carbon\Carbon;
 use App\User;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,7 +39,7 @@ class ContactsTest extends TestCase
         $response->assertJsonCount(1)->assertJson([
             'data' => [
                 ['contact_id' => $contact->id],
-            ]
+            ],
         ]);
     }
     /** @test
@@ -54,9 +55,10 @@ class ContactsTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_add_a_contact()
     {
-        $this->post('/api/contacts', $this->data());
+        $response = $this->post('/api/contacts', $this->data());
 
         $contact = Contact::first();
+        // dd(json_decode($response->getContent()));
 
         // assertCount($count, $array) 配列$arrayの値の数が$countである。
         // $this->assertCount(1, $contact);
@@ -64,7 +66,15 @@ class ContactsTest extends TestCase
         $this->assertEquals('test@email.com', $contact->email);
         $this->assertEquals('05/14/1988', $contact->birthday->format('m/d/Y'));
         $this->assertEquals('ABC String', $contact->company);
-
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJson([
+            'data' => [
+                'contact_id' => $contact->id,
+            ],
+            'links' => [
+                'self' => url('/contacts/' . $contact->id),
+            ],
+        ]);
     }
 
     /** @test
