@@ -21657,7 +21657,7 @@ var render = function() {
                 {
                   staticClass: "pt-12 text-xs text-gray-500 uppercase font-bold"
                 },
-                [_vm._v("Settings")]
+                [_vm._v("設定")]
               ),
               _vm._v(" "),
               _c(
